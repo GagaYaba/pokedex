@@ -4,7 +4,7 @@ import { Trainer } from "../types/Trainer";
 import { TrainerList } from "../components/TrainerList";
 import { Pokedex } from "../components/Pokedex";
 
-import "../styles/trainer-card.css";
+import "../styles/cards.css";
 
 export const TrainerSelection = () => {
     const [selectedTrainer, setSelectedTrainer] = useState<Trainer | null>(null);

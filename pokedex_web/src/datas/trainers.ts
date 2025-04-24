@@ -11,8 +11,7 @@ export const trainers: Trainer[] = [
             type: "Électrik",
         },
         avatar: "/assets/ash.png",
-        caughtPokemons: [1, 4, 7, 10]
-
+        caughtPokemons: [1, 4, 7, 25]
     },
     {
         id: "red",
@@ -24,7 +23,7 @@ export const trainers: Trainer[] = [
             type: "Normal",
         },
         avatar: "/assets/red.png",
-        caughtPokemons: [1, 4, 7, 10]
+        caughtPokemons: []
     },
     {
         id: "jessie",
@@ -36,7 +35,7 @@ export const trainers: Trainer[] = [
             type: "Poison",
         },
         avatar: "/assets/jessie.png",
-        caughtPokemons: [1, 4, 7, 10]
+        caughtPokemons: []
     },
     {
         id: "james",
@@ -48,6 +47,6 @@ export const trainers: Trainer[] = [
             type: "Poison",
         },
         avatar: "/assets/james.png",
-        caughtPokemons: [1, 4, 7, 10]
+        caughtPokemons: []
     },
 ];
