@@ -1,5 +1,11 @@
-import './App.css'
+import { TrainerSelection } from "./views/TrainerSelection";
 
-function App() {}
+const App = () => {
+    return (
+        <div>
+            <TrainerSelection /> {}
+        </div>
+    );
+};
 
-export default App
+export default App;
