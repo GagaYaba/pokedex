@@ -2,49 +2,45 @@ import { Trainer } from "../types/Trainer";
 
 export const trainers: Trainer[] = [
     {
-        id: "ash",
+        id: 1,
         name: "Sacha",
         age: 10,
         region: "Kanto",
         starter: {
             name: "Pikachu",
-            type: "Électrik",
         },
         avatar: "/assets/ash.png",
-        caughtPokemons: [1, 4, 7, 25]
+        caughtPokemons: [25, 3, 6, 9]
     },
     {
-        id: "red",
+        id: 2,
         name: "Régis",
         age: 12,
         region: "Kanto",
         starter: {
             name: "Evoli",
-            type: "Normal",
         },
         avatar: "/assets/red.png",
         caughtPokemons: []
     },
     {
-        id: "jessie",
+        id: 3,
         name: "Jessie",
         age: 25,
         region: "Kanto",
         starter: {
             name: "Arbok",
-            type: "Poison",
         },
         avatar: "/assets/jessie.png",
         caughtPokemons: []
     },
     {
-        id: "james",
+        id: 4,
         name: "James",
         age: 26,
         region: "Kanto",
         starter: {
             name: "Smogo",
-            type: "Poison",
         },
         avatar: "/assets/james.png",
         caughtPokemons: []

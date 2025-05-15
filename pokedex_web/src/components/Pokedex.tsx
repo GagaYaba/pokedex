@@ -28,7 +28,7 @@ interface Props {
 
 export const Pokedex: React.FC<Props> = ({ trainerId, caughtPokemons, onBack }) => {
     const [selectedPokemons, setSelectedPokemons] = useState<Pokemon[]>([]);
-    const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null);  // État pour Pokémon sélectionné
+    const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null);
 
     useEffect(() => {
         const pokemonsCaptured = caughtPokemons
@@ -96,13 +96,17 @@ export const Pokedex: React.FC<Props> = ({ trainerId, caughtPokemons, onBack }) 
                         <p><strong>Niveau 100:</strong> {selectedPokemon.level_100}</p>
 
                         <h4>Évolution:</h4>
-                        <ul>
-                            {selectedPokemon.evolution.next.map((evo) => (
-                                <li key={evo.pokedex_id}>
-                                    {evo.name} (Condition: {evo.condition})
-                                </li>
-                            ))}
-                        </ul>
+                        {selectedPokemon.evolution.next && selectedPokemon.evolution.next.length > 0 ? (
+                            <ul>
+                                {selectedPokemon.evolution.next.map((evo) => (
+                                    <li key={evo.pokedex_id}>
+                                        {evo.name} (Condition: {evo.condition})
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p>Aucune évolution.</p>
+                        )}
                     </div>
                 </div>
             )}
