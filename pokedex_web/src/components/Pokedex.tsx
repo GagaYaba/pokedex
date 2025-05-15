@@ -56,17 +56,6 @@ export const Pokedex: React.FC<Props> = ({ trainerId, caughtPokemons, onBack }) 
                             className="pokemon-card"
                             onClick={() => handlePokemonClick(pokemon)}
                         >
-                            {/* <img
-                                src={pokemon.sprites.regular}
-                                alt={pokemon.name.fr}
-                                className="pokemon-avatar"
-                            /> */}
-                            <h3>{pokemon.name.fr}</h3>
-                            <div>
-                                {pokemon.types.map((type, index) => (
-                                    <img key={index} src={type.image} alt={type.name} width={30} />
-                                ))}
-                            </div>
                         </div>
                     ))}
                 </div>
@@ -84,6 +73,11 @@ export const Pokedex: React.FC<Props> = ({ trainerId, caughtPokemons, onBack }) 
                         <h3>{selectedPokemon.name.fr}</h3>
                         <p><strong>Catégorie:</strong> {selectedPokemon.category}</p>
                         <p><strong>Types:</strong> {selectedPokemon.types.map(type => type.name).join(", ")}</p>
+                        <div>
+                            {selectedPokemon.types.map((type, index) => (
+                                <img key={index} src={type.image} alt={type.name} width={30} />
+                            ))}
+                        </div>
                         <p><strong>Talents:</strong> {selectedPokemon.talents.map(talent => talent.name).join(", ")}</p>
                         <p><strong>Statistiques:</strong></p>
                         <ul>
