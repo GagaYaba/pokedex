@@ -4,10 +4,9 @@ import { TrainerCard } from "./TrainerCard";
 interface Props {
     trainers: Trainer[];
     onSelectTrainer: (trainer: Trainer) => void;
-    onDeleteTrainer?: (id: number) => void;
 }
 
-export const TrainerList: React.FC<Props> = ({ trainers, onSelectTrainer, onDeleteTrainer }) => {
+export const TrainerList: React.FC<Props> = ({ trainers, onSelectTrainer }) => {
     return (
         <div className="trainer-grid">
             {trainers.map((t) => (
@@ -15,7 +14,6 @@ export const TrainerList: React.FC<Props> = ({ trainers, onSelectTrainer, onDele
                     key={t.id}
                     trainer={t}
                     onSelect={onSelectTrainer}
-                    onDelete={onDeleteTrainer ? () => onDeleteTrainer(t.id) : undefined}
                 />
             ))}
         </div>

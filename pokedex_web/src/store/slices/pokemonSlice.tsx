@@ -8,12 +8,14 @@ const initialState: PokemonState = {
     capturedPokemonIds: [],
 };
 
-const trainerSlice = createSlice({
-    name: "trainer",
+const pokemonSlice = createSlice({
+    name: "pokemon",
     initialState,
     reducers: {
         addTrainerId: (state, action: PayloadAction<number>) => {
-            state.capturedPokemonIds.push(action.payload);
+            if (!state.capturedPokemonIds.includes(action.payload)) {
+                state.capturedPokemonIds.push(action.payload);
+            }
         },
         removeTrainerId: (state, action: PayloadAction<number>) => {
             state.capturedPokemonIds = state.capturedPokemonIds.filter(
@@ -23,5 +25,5 @@ const trainerSlice = createSlice({
     },
 });
 
-export const { addTrainerId, removeTrainerId } = trainerSlice.actions;
-export default trainerSlice.reducer;
+export const { addTrainerId, removeTrainerId } = pokemonSlice.actions;
+export default pokemonSlice.reducer;

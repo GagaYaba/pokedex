@@ -1,84 +1,96 @@
-import { useState, useEffect } from "react";
-import { pokemons } from "../datas/pokemons";
-
-interface Pokemon {
-    pokedex_id: number;
-    name: { fr: string; en: string; jp: string };
-    sprites: { regular: string; shiny: string };
-    types: { name: string; image: string }[];
-
-    category: string;
-    talents: { name: string; tc: boolean }[];
-    stats: { hp: number; atk: number; def: number; spe_atk: number; spe_def: number; vit: number };
-    resistances: { name: string; multiplier: number }[];
-    evolution: { pre: null | any; next: { pokedex_id: number; name: string; condition: string }[]; mega: null | any };
-    height: string;
-    weight: string;
-    egg_groups: string[];
-    sexe: { male: number; female: number };
-    catch_rate: number;
-    level_100: number;
-}
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useGetPokemonQuery } from "../api/pokemonApi";
+import { addTrainerId } from "../store/slices/pokemonSlice";
 
 interface Props {
     trainerId: string;
     caughtPokemons: number[];
-    onBack: () => void;
 }
 
-export const Pokedex: React.FC<Props> = ({ trainerId, caughtPokemons, onBack }) => {
-    const [selectedPokemons, setSelectedPokemons] = useState<Pokemon[]>([]);
-    const [selectedPokemon, setSelectedPokemon] = useState<Pokemon | null>(null);
+const MAX_POKEMON_ID = 1010;
 
-    useEffect(() => {
-        const pokemonsCaptured = caughtPokemons
-            .map((id) => pokemons.find((pokemon) => pokemon.pokedex_id === id))
-            .filter((pokemon) => pokemon !== undefined) as Pokemon[];
-        setSelectedPokemons(pokemonsCaptured);
-    }, [caughtPokemons]);
+export const Pokedex: React.FC<Props> = ({ trainerId, caughtPokemons }) => {
+    const [selectedPokemonId, setSelectedPokemonId] = useState<number | null>(null);
+    const dispatch = useDispatch();
 
-    const handlePokemonClick = (pokemon: Pokemon) => {
-        setSelectedPokemon(pokemon);
+    const selectedQuery = useGetPokemonQuery(selectedPokemonId ?? -1, {
+        skip: selectedPokemonId === null,
+    });
+
+    const selectedPokemon = selectedQuery.data;
+    const isLoadingSelected = selectedQuery.isLoading;
+
+    const handleCapture = () => {
+        let randomId: number;
+
+        do {
+            randomId = Math.floor(Math.random() * MAX_POKEMON_ID) + 1;
+        } while (caughtPokemons.includes(randomId));
+
+        setSelectedPokemonId(randomId);
+        dispatch(addTrainerId(randomId));
     };
 
     return (
         <div style={{ textAlign: "center" }}>
             <h2>Pokédex de {trainerId}</h2>
-            <button onClick={onBack}>Retour à la sélection</button>
 
-            {selectedPokemons.length === 0 ? (
+            <button onClick={handleCapture}>Un Pokémon sauvage apparaît</button>
+
+            {caughtPokemons.length === 0 ? (
                 <p>Aucun Pokémon capturé pour ce dresseur.</p>
             ) : (
                 <div className="pokedex-grid">
-                    {selectedPokemons.map((pokemon) => (
-                        <div
-                            key={pokemon.pokedex_id}
-                            className="pokemon-card"
-                            onClick={() => handlePokemonClick(pokemon)}
-                        >
-                        </div>
-                    ))}
+                    {caughtPokemons.map((id) => {
+                        const { data, isLoading, error } = useGetPokemonQuery(id);
+                        return (
+                            <div
+                                key={id}
+                                className="pokemon-card"
+                                onClick={() => data && setSelectedPokemonId(id)}
+                            >
+                                {isLoading && <span>Chargement...</span>}
+                                {error && <span>Erreur</span>}
+                                {data && (null)}
+                            </div>
+                        );
+                    })}
                 </div>
             )}
+
+            {selectedPokemonId && isLoadingSelected}
 
             {selectedPokemon && (
                 <div className="pokemon-details">
                     <div className="details-image">
                         <img
-                            src={selectedPokemon.sprites.regular}
+                            src={selectedPokemon.sprites?.regular}
                             alt={selectedPokemon.name.fr}
                         />
                     </div>
                     <div className="details-info">
                         <h3>{selectedPokemon.name.fr}</h3>
                         <p><strong>Catégorie:</strong> {selectedPokemon.category}</p>
-                        <p><strong>Types:</strong> {selectedPokemon.types.map(type => type.name).join(", ")}</p>
+                        <p>
+                            <strong>Types:</strong>{" "}
+                            {Array.isArray(selectedPokemon.types)
+                                ? selectedPokemon.types.map((type: any) => type.name).join(", ")
+                                : "Inconnu"}
+                        </p>
                         <div>
-                            {selectedPokemon.types.map((type, index) => (
-                                <img key={index} src={type.image} alt={type.name} width={30} />
-                            ))}
+                            {Array.isArray(selectedPokemon.types) &&
+                                selectedPokemon.types.map((type: any, index: number) => (
+                                    <img key={index} src={type.image} alt={type.name} width={30} />
+                                ))}
                         </div>
-                        <p><strong>Talents:</strong> {selectedPokemon.talents.map(talent => talent.name).join(", ")}</p>
+                        <p>
+                            <strong>Talents:</strong>{" "}
+                            {Array.isArray(selectedPokemon.talents)
+                                ? selectedPokemon.talents.map((talent: any) => talent.name).join(", ")
+                                : "Aucun"}
+                        </p>
+
                         <p><strong>Statistiques:</strong></p>
                         <ul>
                             <li>HP: {selectedPokemon.stats.hp}</li>
@@ -90,15 +102,24 @@ export const Pokedex: React.FC<Props> = ({ trainerId, caughtPokemons, onBack }) 
                         </ul>
                         <p><strong>Hauteur:</strong> {selectedPokemon.height}</p>
                         <p><strong>Poids:</strong> {selectedPokemon.weight}</p>
-                        <p><strong>Groupes d'œufs:</strong> {selectedPokemon.egg_groups.join(", ")}</p>
-                        <p><strong>Sexe:</strong> {`Mâle: ${selectedPokemon.sexe.male}%, Femelle: ${selectedPokemon.sexe.female}%`}</p>
+                        <p>
+                            <strong>Groupes d'œufs:</strong>{" "}
+                            {Array.isArray(selectedPokemon.egg_groups)
+                                ? selectedPokemon.egg_groups.join(", ")
+                                : "Inconnu"}
+                        </p>
+                        <p>
+                            <strong>Sexe:</strong>{" "}
+                            {selectedPokemon.sexe && selectedPokemon.sexe.male != null && selectedPokemon.sexe.female != null
+                                ? `Mâle: ${selectedPokemon.sexe.male}%, Femelle: ${selectedPokemon.sexe.female}%`
+                                : "Inconnu"}
+                        </p>
                         <p><strong>Catch Rate:</strong> {selectedPokemon.catch_rate}</p>
                         <p><strong>Niveau 100:</strong> {selectedPokemon.level_100}</p>
-
                         <h4>Évolution:</h4>
-                        {selectedPokemon.evolution.next && selectedPokemon.evolution.next.length > 0 ? (
+                        {Array.isArray(selectedPokemon.evolution?.next) && selectedPokemon.evolution.next.length > 0 ? (
                             <ul>
-                                {selectedPokemon.evolution.next.map((evo) => (
+                                {selectedPokemon.evolution.next.map((evo: any) => (
                                     <li key={evo.pokedex_id}>
                                         {evo.name} (Condition: {evo.condition})
                                     </li>
